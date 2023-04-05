@@ -9,7 +9,7 @@ namespace MyCourse.Controllers
 {
     public class HomeController : Controller
     {
-        public async Task<IActionResult> Index([FromServices] ICachedCourseService courseService) 
+        public async Task<IActionResult> Index([FromServices] ICachedCourseService courseService)
         {
             ViewData["Title"] = "Benvenuto su MyCourse!";
             List<CourseViewModel> bestRatingCourses = await courseService.GetBestRatingCoursesAsync();
