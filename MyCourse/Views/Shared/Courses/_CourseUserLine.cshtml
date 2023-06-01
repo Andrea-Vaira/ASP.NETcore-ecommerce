@@ -1,0 +1,21 @@
+@model CourseViewModel
+    
+<a class="row course" asp-controller="Courses" asp-action="Detail" asp-route-id="@Model.Id">
+    <div class="col-md-1">
+        <img src="@Model.ImagePath" width="52" height="52" alt="@Model.Title">
+    </div>
+    <div class="col-md-7">
+        <h2>@Model.Title</h2>
+        <author>di @Model.Author</author>
+    </div>
+    <div class="col-md-4 rating" title="@Model.Rating">
+        <rating value="@Model.Rating"></rating>
+    </div>
+</a>
+
+<style>
+    a:hover {
+        text-decoration: none;
+        border-top: 1px solid #ababab;
+    }
+</style>

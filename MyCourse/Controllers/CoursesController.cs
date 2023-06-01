@@ -10,9 +10,11 @@ namespace MyCourse.Controllers
     public class CoursesController : Controller
     {
         private readonly ICourseService courseService;
-        public CoursesController(ICachedCourseService courseService)
+        private readonly IUsersService usersService;
+        public CoursesController(ICachedCourseService courseService, IUsersService usersService)
         {
             this.courseService = courseService;
+            this.usersService = usersService;
         }
         public async Task<IActionResult> Index(CourseListInputModel input)
         {
@@ -30,7 +32,9 @@ namespace MyCourse.Controllers
 
         public async Task<IActionResult> Detail(int id)
         {
-            CourseDetailViewModel viewModel = await courseService.GetCourseAsync(id);
+            ListViewModel<UsersViewModel> users = await usersService.GetUsersByCourseId(id);
+            CourseDetailViewModel viewModel = (await courseService.GetCourseAsync(id));
+            viewModel.users = users.Results;
             ViewData["Title"] = viewModel.Title;
             return View(viewModel);
         }

@@ -16,6 +16,10 @@ namespace MyCourse.Models.Services.Infrastructure
         public virtual DbSet<Course> Courses { get; set; }
         public virtual DbSet<Lesson> Lessons { get; set; }
 
+        public virtual DbSet<User> users { get; set; }
+
+        public virtual DbSet<User_Courses> user_courses { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("ProductVersion", "2.2.4-servicing-10062");
@@ -31,7 +35,7 @@ namespace MyCourse.Models.Services.Infrastructure
                     builder.Property(money => money.Currency)
                     .HasConversion<string>()
                     .HasColumnName("CurrentPrice_Currency"); //Superfluo perché le nostre colonne seguono già la convenzione di nomi
-                    builder.Property(money => money.Amount).HasColumnName("CurrentPrice_Amount"); //Superfluo perché le nostre colonne seguono già la convenzione di nomi
+                    builder.Property(money => money.Amount).HasColumnName("CurrentPrice_Amount").HasConversion<float>(); //Superfluo perché le nostre colonne seguono già la convenzione di nomi
                 });
 
                 entity.OwnsOne(course => course.FullPrice, builder => {

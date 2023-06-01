@@ -1,0 +1,43 @@
+@model UsersDetailViewModel
+
+<div class="row">
+    <div class="col-md-12">
+        <h1>Dettagli dell'Utente</h1>
+    </div>
+</div>
+
+<div class="row" style="margin-bottom: 40px;">
+    <div class="col-md-3">
+        <img src="@Model.user.Img" class="img-fluid" style="width: 200px; height:200px; border-radius:50% 50%;" />
+    </div>
+    @* <div class="col-md-4">Id: <span>@Model.user.Id</span></div>
+    <div class="col-md-4">Nome: <span>@Model.user.Name</span></div>
+    <div class="col-md-4">Gender: <span>@Model.user.genderDisplay()</span></div> *@
+
+    <div class="col-md-9">
+        <br>
+        <h5><b>Nome: </b> @Model.user.Name</h5>
+        <h5><b>Cognome: </b> @Model.user.Surname</h5>
+        <h5><b>Genere: </b> @Model.user.genderDisplay()</h5>
+        <h5><b>Email: </b> @Model.user.Email</h5>
+        <h5><b>Telefono: </b> @Model.user.Telefono</h5>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>Corsi</h2>
+        @foreach(CourseViewModel course in Model.courses.Results)
+        {
+            <partial name="Courses/_CourseLine" model="@course"></partial>
+        }
+
+     <div class="col-md-12" style="margin-top: 30px; margin-left:0">
+        <a asp-action="Index" ><button class="btn btn-primary">Torna alla lista</button></a>
+    </div>
+    </div>
+   
+</div>
+
+<style>
+</style>

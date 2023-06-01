@@ -37,16 +37,31 @@ namespace MyCourse
                 Configuration.Bind("ResponseCache:Home", homeProfile);
                 options.CacheProfiles.Add("Home", homeProfile);
                 
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
-            services.AddTransient<ICourseService, AdoNetCourseService>();
-            //services.AddTransient<ICourseService, EfCoreCourseService>();
-            services.AddTransient<IDatabaseAccessor, SqliteDatabaseAccessor>();
-            services.AddTransient<ICachedCourseService, MemoryCacheCourseService>();
+            })
+            #if DEBUG
+            .AddRazorRuntimeCompilation()
+            #endif
+            ;
 
-            services.AddDbContextPool<MyCourseDbContext>(optionsBuilder => {
-                string connectionString = Configuration.GetSection("ConnectionStrings").GetValue<string>("Default");
-                optionsBuilder.UseSqlite(connectionString);
-            });
+            //Usiamo ADO.NET o Entity Framework Core per l'accesso ai dati?
+            bool useAdoNet = true;
+            if (useAdoNet)
+            {
+                services.AddTransient<ICourseService, AdoNetCourseService>();
+                services.AddTransient<IUsersService, AdoNetUsersService>();
+                services.AddTransient<IDatabaseAccessor, SqliteDatabaseAccessor>();
+            }
+            else
+            {
+                services.AddTransient<ICourseService, EfCoreCourseService>();
+                services.AddTransient<IUsersService, EfCoreUsersService>();
+                services.AddDbContextPool<MyCourseDbContext>(optionsBuilder => {
+                    string connectionString = Configuration.GetSection("ConnectionStrings").GetValue<string>("Default");
+                    optionsBuilder.UseSqlite(connectionString);
+                });
+            }
+
+            services.AddTransient<ICachedCourseService, MemoryCacheCourseService>();
 
             //Options
             services.Configure<CoursesOptions>(Configuration.GetSection("Courses"));
@@ -85,12 +100,6 @@ namespace MyCourse
             app.UseEndpoints(routeBuilder => {
                 routeBuilder.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
             });
-            //app.UseMvcWithDefaultRoute();
-            /*app.UseMvc(routeBuilder => 
-            {
-                // Esempio di percorso conforme al template route: /courses/detail/5
-                routeBuilder.MapRoute("default", "{controller=Home}/{action=Index}/{id?}");
-            });*/
         }
     }
 }

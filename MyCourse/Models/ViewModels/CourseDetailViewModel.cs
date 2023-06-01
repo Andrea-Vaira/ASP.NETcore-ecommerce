@@ -16,6 +16,7 @@ namespace MyCourse.Models.ViewModels
         }
         public string Description { get; set; }
         public List<LessonViewModel> Lessons { get; set; }
+        public List<UsersViewModel> users { get; set; }
 
         public TimeSpan TotalCourseDuration
         {

@@ -82,6 +82,30 @@ namespace MyCourse.Models.Services.Application
                 return result.Results;
         }
 
+        public async Task<ListViewModel<CourseViewModel>> GetCoursesAsync(CourseListInputModel model, int userId){
+            FormattableString query = 
+            $@"SELECT c.Id as Id, Title, ImagePath, Author, Rating, FullPrice_Amount, FullPrice_Currency, CurrentPrice_Amount, CurrentPrice_Currency
+            FROM Courses c
+            INNER JOIN user_courses uc ON c.Id = uc.course_id
+            INNER JOIN users u ON u.id = uc.user_id
+            WHERE u.id = {userId}";
+
+            DataSet dataSet = await db.QueryAsync(query);
+            var dataTable = dataSet.Tables[0];
+            var courseList = new List<CourseViewModel>();
+            foreach (DataRow courseRow in dataTable.Rows)
+            {
+                CourseViewModel courseViewModel = CourseViewModel.FromDataRow(courseRow);
+                courseList.Add(courseViewModel);
+            }
+            ListViewModel<CourseViewModel> result = new ListViewModel<CourseViewModel>
+            {
+                Results = courseList,
+                TotalCount = courseList.Count
+            };
+
+            return result;
+        }
         public async Task<ListViewModel<CourseViewModel>> GetCoursesAsync(CourseListInputModel model)
         {
             string orderby = model.OrderBy == "CurrentPrice" ? "CurrentPrice_Amount" : model.OrderBy;
